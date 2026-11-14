@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My English Space</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f7f4;
+  margin: 0;
+  color: #243b32;
+}
+header {
+  background: #174d3c;
+  color: white;
+  text-align: center;
+  padding: 35px 15px;
+}
+main {
+  max-width: 800px;
+  margin: 25px auto;
+  padding: 15px;
+}
+input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  margin: 15px 0;
+  box-shadow: 0 2px 10px #0000000d;
+}
+.word {
+  color: #16865c;
+  font-size: 25px;
+  font-weight: bold;
+}
+button {
+  background: #16865c;
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  margin: 5px 0;
+}
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #eaf3ee;
+  color: #243b32;
+}
+.option:hover {
+  background: #cce7d8;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>My English Space</h1>
+  <p>Learn English Every Day!</p>
+</header>
+
+<main>
+  <h2>📚 Từ vựng tiếng Anh</h2>
+  <input id="search" placeholder="Tìm từ vựng..."
+    oninput="showWords()">
+
+  <div id="words"></div>
+
+  <div class="card">
+    <h2>📝 Kiểm tra kiến thức</h2>
+    <p id="question"></p>
+    <div id="options"></div>
+    <p id="result"></p>
+    <button onclick="nextQuestion()">Câu tiếp theo</button>
+  </div>
+</main>
+
+<script>
+const vocabulary = [
+  {
+    word:"Improve",
+    type:"Verb",
+    meaning:"Cải thiện, nâng cao",
+    example:"I want to improve my English.",
+    translation:"Tôi muốn cải thiện tiếng Anh."
+  },
+  {
+    word:"Beautiful",
+    type:"Adjective",
+    meaning:"Xinh đẹp",
+    example:"She is beautiful.",
+    translation:"Cô ấy xinh đẹp."
+  },
+  {
+    word:"Knowledge",
+    type:"Noun",
+    meaning:"Kiến thức",
+    example:"Knowledge is important.",
+    translation:"Kiến thức rất quan trọng."
+  },
+  {
+    word:"Environment",
+    type:"Noun",
+    meaning:"Môi trường",
+    example:"We should protect the environment.",
+    translation:"Chúng ta nên bảo vệ môi trường."
+  },
+  {
+    word:"Achieve",
+    type:"Verb",
+    meaning:"Đạt được",
+    example:"I want to achieve my goals.",
+    translation:"Tôi muốn đạt được mục tiêu."
+  }
+];
+
+function showWords() {
+  const search = document.getElementById("search")
+    .value.toLowerCase();
+
+  const filtered = vocabulary.filter(v =>
+    v.word.toLowerCase().includes(search) ||
+    v.meaning.toLowerCase().includes(search)
+  );
+
+  document.getElementById("words").innerHTML =
+    filtered.map(v => `
+      <div class="card">
+        <div class="word">${v.word}</div>
+        <p><b>Loại từ:</b> ${v.type}</p>
+        <p><b>Nghĩa:</b> ${v.meaning}</p>
+        <p><b>Ví dụ:</b> ${v.example}</p>
+        <p><b>Dịch:</b> ${v.translation}</p>
+      </div>
+    `).join("") || "<p>Không tìm thấy từ này.</p>";
+}
+
+const quiz = [
+  {
+    q:"Improve có nghĩa là gì?",
+    options:["Cải thiện","Xinh đẹp","Kiến thức","Môi trường"],
+    answer:0
+  },
+  {
+    q:"Beautiful thuộc loại từ nào?",
+    options:["Danh từ","Động từ","Tính từ","Trạng từ"],
+    answer:2
+  },
+  {
+    q:"Knowledge có nghĩa là gì?",
+    options:["Mục tiêu","Kiến thức","Môi trường","Thành công"],
+    answer:1
+  }
+];
+
+let current = 0;
+let answered = false;
+
+function loadQuestion() {
+  answered = false;
+  const q = quiz[current];
+  document.getElementById("question").innerText =
+    q.q + " (" + (current+1) + "/" + quiz.length + ")";
+
+  document.getElementById("result").innerText = "";
+  document.getElementById("options").innerHTML =
+    q.options.map((o,i) =>
+      `<button class="option" onclick="checkAnswer(${i})">${o}</button>`
+    ).join("");
+}
+
+function checkAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const correct = quiz[current].answer;
+  document.getElementById("result").innerText =
+    i === correct ? "🎉 Chính xác!" :
+    "❌ Chưa đúng. Đáp án: " + quiz[current].options[correct];
+}
+
+function nextQuestion() {
+  current = (current + 1) % quiz.length;
+  loadQuestion();
+}
+
+showWords();
+loadQuestion();
+</script>
+</body>
+</html>
